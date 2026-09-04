@@ -1,0 +1,182 @@
+fileFormatVersion: 2
+guid: 0ee80086467078743830734043271133
+ModelImporter:
+  serializedVersion: 19301
+  internalIDToNameTable:
+  - first:
+      74: 3774118256476617290
+    second: Yuuri|Drive
+  - first:
+      74: -2679303906403400522
+    second: Yuuri|Drive_Left
+  - first:
+      74: -766136001011439485
+    second: Yuuri|Drive_Left_Hard
+  - first:
+      74: 5125376181801183814
+    second: Yuuri|Drive_Right
+  - first:
+      74: 41379895354843613
+    second: Yuuri|Drive_Right_Hard
+  - first:
+      74: -6386504592277937252
+    second: Yuuri|Enter_Ket_Back
+  - first:
+      74: 5355991839144193539
+    second: Yuuri|Enter_Ket_Left
+  - first:
+      74: -6470206205311086146
+    second: Yuuri|Enter_Ket_Right
+  - first:
+      74: -3103800058540431945
+    second: Yuuri|Exit_Ket_Back
+  - first:
+      74: 3522583810216661851
+    second: Yuuri|Exit_Ket_Left
+  - first:
+      74: -4282205452344869724
+    second: Yuuri|Exit_Ket_Right
+  - first:
+      74: -1412760025753156087
+    second: Yuuri|Idle
+  - first:
+      74: -5142979607967003590
+    second: Yuuri|Idle.002
+  - first:
+      74: -6019501070467082357
+    second: Yuuri|Ket_Left
+  - first:
+      74: 7233990459238442284
+    second: Yuuri|Ket_Left_Hard
+  - first:
+      74: 3929700675879543474
+    second: Yuuri|Ket_Right
+  - first:
+      74: -2844930012367071386
+    second: Yuuri|Ket_Right_Hard
+  - first:
+      74: 3641134041146006855
+    second: Yuuri|Ket_Straight
+  - first:
+      74: 5108190223467631729
+    second: Yuuri|Null
+  - first:
+      74: -3122830634229762626
+    second: Yuuri|Run
+  - first:
+      74: -7351076618342872323
+    second: Yuuri|Sit_Ket_1
+  - first:
+      74: -3339163964768343042
+    second: Yuuri|Sit_Ket_2
+  - first:
+      74: 239885410285044509
+    second: Yuuri|Walk2
+  - first:
+      74: 2861084799494704108
+    second: Yuuri|Walk_1
+  - first:
+      74: 8260811687594823795
+    second: Yuuri|Walk_2
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Yuuri.001
+    second: {fileID: 2100000, guid: d78bed78aff085b47b5fa247405e3daa, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: YuuriHead.001
+    second: {fileID: 2100000, guid: 6c5d51518243df144a4155ec02e03e74, type: 2}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

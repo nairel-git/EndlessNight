@@ -1,0 +1,458 @@
+fileFormatVersion: 2
+guid: aa06806f736a90848898abda423fee98
+ModelImporter:
+  serializedVersion: 19301
+  internalIDToNameTable:
+  - first:
+      74: 3292635174919046285
+    second: Chito|Chito.001|Chito|Drive
+  - first:
+      74: -4072863167465913547
+    second: Chito|Chito.001|Chito|Drive_Left
+  - first:
+      74: 6355054594754707284
+    second: Chito|Chito.001|Chito|Drive_Left_Hard
+  - first:
+      74: -7557578244373092571
+    second: Chito|Chito.001|Chito|Drive_Right
+  - first:
+      74: 4147547098498157693
+    second: Chito|Chito.001|Chito|Drive_Right_Hard
+  - first:
+      74: -2459083421338141785
+    second: Chito|Chito.001|Chito|Enter_Ket_Back
+  - first:
+      74: 4654120197215926233
+    second: Chito|Chito.001|Chito|Enter_Ket_Left
+  - first:
+      74: 5324331235860933316
+    second: Chito|Chito.001|Chito|Enter_Ket_Right
+  - first:
+      74: -6234771892127424574
+    second: Chito|Chito.001|Chito|Exit_Ket_Back
+  - first:
+      74: 6723838761997630814
+    second: Chito|Chito.001|Chito|Exit_Ket_Left
+  - first:
+      74: 2057480292867202981
+    second: Chito|Chito.001|Chito|Exit_Ket_Right
+  - first:
+      74: -6538197082566033623
+    second: Chito|Chito.001|Chito|Idle
+  - first:
+      74: 2157649708562051610
+    second: Chito|Chito.001|Chito|Idle.002
+  - first:
+      74: 4649951505653540556
+    second: Chito|Chito.001|Chito|Idle_1
+  - first:
+      74: -3904828020202260989
+    second: Chito|Chito.001|Chito|Idle_2
+  - first:
+      74: 708214931241148857
+    second: Chito|Chito.001|Chito|Idle_3
+  - first:
+      74: 7314849336366386069
+    second: Chito|Chito.001|Chito|Idle_3.001
+  - first:
+      74: -924256526454711853
+    second: Chito|Chito.001|Chito|Ket_Left
+  - first:
+      74: 3518671777202729504
+    second: Chito|Chito.001|Chito|Ket_Left_Hard
+  - first:
+      74: 905001236086838741
+    second: Chito|Chito.001|Chito|Ket_Right
+  - first:
+      74: 2124812306805459217
+    second: Chito|Chito.001|Chito|Ket_Right_Hard
+  - first:
+      74: 300826636012765074
+    second: Chito|Chito.001|Chito|Ket_Straight
+  - first:
+      74: 4017729035361609618
+    second: Chito|Chito.001|Chito|Null
+  - first:
+      74: 3684101001164125400
+    second: Chito|Chito.001|Chito|PoseLib.001
+  - first:
+      74: -8554829178127288587
+    second: Chito|Chito.001|Chito|Rotate_Right
+  - first:
+      74: -1160304363602094132
+    second: Chito|Chito.001|Chito|Run
+  - first:
+      74: 8822467592506386050
+    second: Chito|Chito.001|Chito|Sit_Ket_1
+  - first:
+      74: -4988401352136991348
+    second: Chito|Chito.001|Chito|Sit_Ket_2
+  - first:
+      74: 8421277173770346110
+    second: Chito|Chito.001|Chito|Walk
+  - first:
+      74: 3729272253986804933
+    second: Chito|Chito.001|Chito|Walk2
+  - first:
+      74: 6094973307618556853
+    second: Chito|Chito.001|Chito|Walk_1
+  - first:
+      74: -8126473693518860123
+    second: Chito|Chito.001|Chito|Walk_2
+  - first:
+      74: -915531686754782043
+    second: Chito|Chito|Chito|Drive
+  - first:
+      74: -1782353350391315298
+    second: Chito|Chito|Chito|Drive_Left
+  - first:
+      74: -2786389961909262381
+    second: Chito|Chito|Chito|Drive_Left_Hard
+  - first:
+      74: -4773337812228962138
+    second: Chito|Chito|Chito|Drive_Right
+  - first:
+      74: -9109515866800376349
+    second: Chito|Chito|Chito|Drive_Right_Hard
+  - first:
+      74: -8668349024668424536
+    second: Chito|Chito|Chito|Enter_Ket_Back
+  - first:
+      74: 1653488720099651203
+    second: Chito|Chito|Chito|Enter_Ket_Left
+  - first:
+      74: 1990361694257296544
+    second: Chito|Chito|Chito|Enter_Ket_Right
+  - first:
+      74: -8728734829239190004
+    second: Chito|Chito|Chito|Exit_Ket_Back
+  - first:
+      74: -884266164714274808
+    second: Chito|Chito|Chito|Exit_Ket_Left
+  - first:
+      74: 8905151307043456382
+    second: Chito|Chito|Chito|Exit_Ket_Right
+  - first:
+      74: -775116285895124822
+    second: Chito|Chito|Chito|HoldBarrel_2.001
+  - first:
+      74: 3528694991640994431
+    second: Chito|Chito|Chito|Idle
+  - first:
+      74: -8680653973494891161
+    second: Chito|Chito|Chito|Idle.002
+  - first:
+      74: -7835728370177583527
+    second: Chito|Chito|Chito|Idle_1
+  - first:
+      74: -4478755110309552218
+    second: Chito|Chito|Chito|Idle_2
+  - first:
+      74: -7237666938147705175
+    second: Chito|Chito|Chito|Idle_3
+  - first:
+      74: -2690145932835230184
+    second: Chito|Chito|Chito|Idle_3.001
+  - first:
+      74: 7896047287024131381
+    second: Chito|Chito|Chito|Ket_Left
+  - first:
+      74: 1095331814791161572
+    second: Chito|Chito|Chito|Ket_Left_Hard
+  - first:
+      74: -8301872045885925707
+    second: Chito|Chito|Chito|Ket_Right
+  - first:
+      74: 1599935309865748197
+    second: Chito|Chito|Chito|Ket_Right_Hard
+  - first:
+      74: 7496249340533630650
+    second: Chito|Chito|Chito|Ket_Straight
+  - first:
+      74: 6872598254496253840
+    second: Chito|Chito|Chito|Null
+  - first:
+      74: -7099549849799025704
+    second: Chito|Chito|Chito|PoseLib.001
+  - first:
+      74: -6911823750940924437
+    second: Chito|Chito|Chito|Rotate_Right
+  - first:
+      74: -7450015647980783683
+    second: Chito|Chito|Chito|Run
+  - first:
+      74: -3447809680845672120
+    second: Chito|Chito|Chito|Sit_Ket_1
+  - first:
+      74: 2475567922839023131
+    second: Chito|Chito|Chito|Sit_Ket_2
+  - first:
+      74: 5338828183108864805
+    second: Chito|Chito|Chito|Walk
+  - first:
+      74: 1492127338536209128
+    second: Chito|Chito|Chito|Walk2
+  - first:
+      74: -6263413965372219439
+    second: Chito|Chito|Chito|Walk_1
+  - first:
+      74: 3100091669989412529
+    second: Chito|Chito|Chito|Walk_2
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Chito.002
+    second: {fileID: 2100000, guid: c23d57f2784ed4c48902b96009e93354, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ChitoHead.002
+    second: {fileID: 2100000, guid: 72795ae5c00da3443a0af472e7ce855f, type: 2}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton:
+    - name: Chito(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Chito
+      parentName: Chito(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
+    - name: Root
+      parentName: Chito
+      position: {x: 7.572118e-11, y: -0.0018850944, z: 0.00008139759}
+      rotation: {x: 1, y: -0.000000031650387, z: 0.00000007677847, w: -0.00000035762787}
+      scale: {x: 1, y: 0.9999999, z: 0.9999999}
+    - name: Torso
+      parentName: Root
+      position: {x: 9.1093766e-10, y: -0.00074219756, z: -0.007956703}
+      rotation: {x: -0.7071069, y: -0.000000042848384, z: -0.00000006392177, w: 0.70710665}
+      scale: {x: 1, y: 1.0000001, z: 1}
+    - name: Head
+      parentName: Torso
+      position: {x: -8.881784e-18, y: 0.0036148976, z: -2.9802322e-10}
+      rotation: {x: 0.027787747, y: 1.1496582e-11, z: -4.1374196e-10, w: 0.9996138}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+    - name: Head.001
+      parentName: Head
+      position: {x: -8.881784e-18, y: 0.0035127352, z: -5.9604643e-10}
+      rotation: {x: 0.85067606, y: -0.000000056999486, z: -0.000000104625606, w: 0.52569026}
+      scale: {x: 1, y: 1.0000002, z: 1.0000005}
+    - name: Head.002
+      parentName: Head
+      position: {x: -8.881784e-18, y: 0.0035127352, z: -5.9604643e-10}
+      rotation: {x: 0.91675174, y: -0.0000000050025792, z: -0.0000000024538136, w: -0.3994576}
+      scale: {x: 1, y: 1.0000001, z: 0.99999994}
+    - name: Head.003
+      parentName: Head
+      position: {x: -8.881784e-18, y: 0.0035127352, z: -5.9604643e-10}
+      rotation: {x: 0.011527279, y: 0.011501272, z: 0.88352346, w: 0.46810386}
+      scale: {x: 1.0000004, y: 1.0000002, z: 1.0000004}
+    - name: Head.004
+      parentName: Head
+      position: {x: -8.881784e-18, y: 0.0035127352, z: -5.9604643e-10}
+      rotation: {x: -0.011684832, y: 0.011658175, z: 0.88547736, w: -0.46438932}
+      scale: {x: 1.0000005, y: 1.0000004, z: 1.0000002}
+    - name: Shoulder.R
+      parentName: Torso
+      position: {x: 0.0009469278, y: 0.0032322684, z: 0.00027922896}
+      rotation: {x: 0.1410305, y: 0.13152656, z: 0.71082705, w: -0.67641413}
+      scale: {x: 0.99999976, y: 0.99999964, z: 0.9999999}
+    - name: Forearm.R
+      parentName: Shoulder.R
+      position: {x: 0.0000000011920929, y: 0.0020947733, z: -0.0000000013038516}
+      rotation: {x: 0.030561676, y: 0.3086102, z: -0.0064927377, w: 0.95067537}
+      scale: {x: 0.9999996, y: 1.0000002, z: 0.9999996}
+    - name: Hand.R
+      parentName: Forearm.R
+      position: {x: 8.1956386e-10, y: 0.0021160096, z: -5.9604643e-10}
+      rotation: {x: 0.031403564, y: 0.042806327, z: -0.17975934, w: 0.98227704}
+      scale: {x: 1.0000002, y: 0.9999997, z: 1.0000004}
+    - name: Shoulder.L
+      parentName: Torso
+      position: {x: -0.0009469278, y: 0.0032322686, z: 0.0002792293}
+      rotation: {x: -0.14103033, y: 0.13152653, z: 0.71082723, w: 0.6764141}
+      scale: {x: 0.99999946, y: 0.99999964, z: 0.9999996}
+    - name: Forearm.L
+      parentName: Shoulder.L
+      position: {x: 2.9802322e-10, y: 0.002094775, z: -0.0000000015459954}
+      rotation: {x: 0.030561637, y: -0.30861023, z: 0.0064930087, w: 0.95067537}
+      scale: {x: 0.99999976, y: 0.9999999, z: 1.0000004}
+    - name: Hand.L
+      parentName: Forearm.L
+      position: {x: -0.000000001490116, y: 0.0021160084, z: -7.45058e-10}
+      rotation: {x: 0.03140363, y: -0.042806685, z: 0.17975889, w: 0.9822771}
+      scale: {x: 1.0000002, y: 1.0000001, z: 1.0000002}
+    - name: Hand_IK.R
+      parentName: Torso
+      position: {x: 0.0030797413, y: 0.0030861234, z: 0.0033163056}
+      rotation: {x: -0.14769965, y: -0.042076748, z: 0.96269727, w: -0.22277424}
+      scale: {x: 0.99999994, y: 1, z: 1.0000005}
+    - name: Elbow_IK.R
+      parentName: Torso
+      position: {x: 0.002492714, y: 0.0017677926, z: -0.0015705791}
+      rotation: {x: 0.042351846, y: -0.69862354, z: 0.709527, w: -0.08187173}
+      scale: {x: 0.99999994, y: 0.99999934, z: 0.9999995}
+    - name: Hand_IK.L
+      parentName: Torso
+      position: {x: -0.0030797417, y: 0.0030861222, z: 0.0033163056}
+      rotation: {x: 0.14769955, y: -0.04207661, z: 0.96269727, w: 0.22277433}
+      scale: {x: 0.9999999, y: 1, z: 1.0000006}
+    - name: Elbow_IK.L
+      parentName: Torso
+      position: {x: -0.0024927142, y: 0.0017677926, z: -0.0015705795}
+      rotation: {x: -0.04235189, y: -0.6986236, z: 0.70952696, w: 0.08187181}
+      scale: {x: 0.9999999, y: 0.99999976, z: 0.9999995}
+    - name: Pelvis
+      parentName: Root
+      position: {x: 9.1093766e-10, y: -0.0007421977, z: -0.007956703}
+      rotation: {x: -0.00000014005596, y: 0.76736015, z: 0.6412164, w: -0.000000057934074}
+      scale: {x: 0.99999976, y: 1, z: 0.9999999}
+    - name: Thigh.R
+      parentName: Pelvis
+      position: {x: -0.000623571, y: 0.00019928151, z: 0.00008274668}
+      rotation: {x: 0.018015366, y: -0.9790803, z: -0.024685608, w: -0.2011661}
+      scale: {x: 0.9999999, y: 0.9999989, z: 1.0000001}
+    - name: Shin.R
+      parentName: Thigh.R
+      position: {x: -2.9802322e-10, y: 0.0041134087, z: -1.6298145e-10}
+      rotation: {x: -0.055270147, y: 0.6053196, z: 0.10170522, w: -0.7875211}
+      scale: {x: 1.0000014, y: 0.9999997, z: 1}
+    - name: Foot.R
+      parentName: Shin.R
+      position: {x: 1.3038516e-10, y: 0.0029459621, z: -2.0489097e-10}
+      rotation: {x: 0.4233301, y: -0.70394737, z: -0.3663514, w: -0.43707713}
+      scale: {x: 0.9999999, y: 1.0000002, z: 0.9999999}
+    - name: Thigh.L
+      parentName: Pelvis
+      position: {x: 0.00062357076, y: 0.00019928158, z: 0.00008274711}
+      rotation: {x: -0.018015342, y: -0.97908044, z: -0.02468572, w: 0.20116565}
+      scale: {x: 0.9999997, y: 0.9999995, z: 0.9999995}
+    - name: Shin.L
+      parentName: Thigh.L
+      position: {x: 2.9802322e-10, y: 0.004113409, z: -4.1443854e-10}
+      rotation: {x: 0.0552699, y: 0.6053196, z: 0.10170546, w: 0.787521}
+      scale: {x: 1.0000002, y: 1.0000007, z: 1}
+    - name: Foot.L
+      parentName: Shin.L
+      position: {x: 7.4505804e-11, y: 0.0029459605, z: -3.7252902e-11}
+      rotation: {x: -0.42333016, y: -0.70394754, z: -0.3663514, w: 0.43707675}
+      scale: {x: 1.0000001, y: 1.0000006, z: 1.0000006}
+    - name: Foot_IK.R
+      parentName: Pelvis
+      position: {x: -0.0009417187, y: 0.003192606, z: 0.001884007}
+      rotation: {x: 0.08894603, y: -0.8656212, z: -0.4700339, w: 0.1478402}
+      scale: {x: 1, y: 1.0000006, z: 1.0000002}
+    - name: Foot_IK.L
+      parentName: Pelvis
+      position: {x: 0.0009417173, y: 0.003192608, z: 0.0018840088}
+      rotation: {x: -0.08894587, y: -0.86562127, z: -0.47003374, w: -0.14784063}
+      scale: {x: 0.9999996, y: 1.0000001, z: 0.99999976}
+    - name: Knee_IK.R
+      parentName: Pelvis
+      position: {x: -0.00080953405, y: -0.0006482413, z: 0.0029616063}
+      rotation: {x: 0.45093295, y: 0.5175141, z: 0.44920355, w: 0.57188714}
+      scale: {x: 0.99999976, y: 0.9999999, z: 1}
+    - name: Knee_IK.L
+      parentName: Pelvis
+      position: {x: 0.00080953207, y: -0.0006482412, z: 0.0029616067}
+      rotation: {x: 0.45093358, y: -0.5175139, z: -0.44920295, w: 0.57188725}
+      scale: {x: 0.99999994, y: 1.0000005, z: 1}
+    - name: ChitoBody
+      parentName: Chito(Clone)
+      position: {x: -0, y: 0.000000026747584, z: -0.000000002011661}
+      rotation: {x: -0.00000008146033, y: 0.0000000017607814, z: -0.0000000035506678,
+        w: 1}
+      scale: {x: 0.9999999, y: 1, z: 0.9999999}
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: Root
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
