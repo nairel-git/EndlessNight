@@ -7,8 +7,6 @@ public class CompanionController : MonoBehaviour
 {
 
 
-    public AIAgent Companion;
-
 
     void Update()
     {

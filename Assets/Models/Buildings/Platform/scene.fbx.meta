@@ -8,12 +8,12 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: line1.001
-    second: {fileID: 2100000, guid: 1e02d1f84113a504b9639c106bb8e538, type: 2}
+    second: {fileID: 2100000, guid: 072f56fb1ac1cea45ad1ba24c0c6c106, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: line2.001
-    second: {fileID: 2100000, guid: d11927a3649062f40a099a2d90d602bb, type: 2}
+    second: {fileID: 2100000, guid: 072f56fb1ac1cea45ad1ba24c0c6c106, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -23,22 +23,22 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: sc_building.001
-    second: {fileID: 2100000, guid: b0140a7cb58aaed419d417a7ea8cc12b, type: 2}
+    second: {fileID: 2100000, guid: e108deec79d790b438ac46a0fe0667c7, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: sc_crane.001
-    second: {fileID: 2100000, guid: 2baefaa7416ceba4394535ab8e278a5a, type: 2}
+    second: {fileID: 2100000, guid: c4243f72da03dcb40b038e0df35c5e79, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: sc_floor.001
-    second: {fileID: 2100000, guid: 063fd801f795fa84494d27f1c016087d, type: 2}
+    second: {fileID: 2100000, guid: d8cbb6bcb95f0f54a8572446e4515bc6, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: sc_pipe.001
-    second: {fileID: 2100000, guid: aca89fd60aba29c4791103652d19f58c, type: 2}
+    second: {fileID: 2100000, guid: 072f56fb1ac1cea45ad1ba24c0c6c106, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -120,7 +120,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.01
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0

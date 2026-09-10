@@ -1,469 +1,367 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 public class AIAgent : MonoBehaviour
 {
-    [Header("Follow Settings")]
-    public Transform followTarget;
-    public bool followEnabled = true;
+    [Header("Target & Layers")]
+    [SerializeField] private GameObject targetPlayer;
+    [SerializeField] private LayerMask obstacleLayer;
 
-    [Header("Grid Settings")]
-    public int gridSize = 10;
-    public float nodeSpacing = 1.5f;
-    [Tooltip("How often (in seconds) to update the path.")]
-    public float updateRate = 0.15f;
+    [Header("Breadcrumb Settings")]
+    [SerializeField] private float recordDistance = 0.8f;
+    [SerializeField] private float waypointReachRadius = 0.6f;
+    [SerializeField] private int maxBreadcrumbs = 50;
 
-    [Header("Raycast Settings")]
-    public float rayStartHeight = 8f;
-    public float rayLength = 20f;
+    [Header("Clearances")]
+    [SerializeField] private float bodyPadding = 0.4f;
+    [SerializeField] private float sideOffset = 1.6f;
 
-    public float safetyMultiplier = 1.8f;
+    [Header("Distance Zones")]
+    [SerializeField] private float startFollowDistance = 4.5f;
+    [SerializeField] private float stopFollowDistance = 2.2f;
 
     [Header("Movement")]
-    public float moveSpeed = 4.5f;
-    public float turnSpeed = 8f;
-    public float stopDistance = 0.5f;
+    [SerializeField] private float walkSpeed = 3.5f;
+    [SerializeField] private float sprintSpeed = 6.0f;
+    [SerializeField] private float turnSpeed = 8.0f;
+    [SerializeField] private float gravity = -9.81f;
 
-    [Header("Layers")]
-    public LayerMask WalkableLayer;
-    public LayerMask NonWalkableLayer;
+    [Header("Debug")]
+    [SerializeField] private bool showGizmos = true;
 
-    // Internal State
-    private Vector3 targetPosition;
-    private Node[,] gridNodes;
-    private List<Vector3> currentPath = new List<Vector3>();
     private CharacterController controller;
-    private Vector3 gridCenterPos;
-    private bool isUsingDirectPath = false; // Debug info
+    private readonly List<Vector3> breadcrumbs = new List<Vector3>();
+    private bool isFollowing = false;
+    private float verticalVelocity = 0f;
+    
 
-    void OnEnable()
+    private Vector3 currentTargetPos;
+    private bool canSeePlayer;
+    private bool isNearWall;
+
+
+
+    private List<Ray> whiskerRays = new List<Ray>();
+    private List<bool> whiskerHits = new List<bool>();
+    private List<Ray> pathGridRays = new List<Ray>();
+    private List<bool> pathGridHits = new List<bool>();
+
+    private void Awake()
     {
         controller = GetComponent<CharacterController>();
-        gridNodes = new Node[gridSize, gridSize];
-        StartCoroutine(AIUpdateLoop());
     }
 
-    IEnumerator AIUpdateLoop()
+    private void Update()
     {
-        while (true)
+        if (targetPlayer == null) return;
+
+        UpdatePlayerTrail();
+
+        float distanceToPlayer = Vector3.Distance(transform.position, targetPlayer.transform.position);
+
+     
+        canSeePlayer = IsPathClearGrid(targetPlayer.transform.position, usePadding: true, saveGizmos: true);
+        
+
+        isNearWall = CheckWallProximity();
+
+ 
+        if (!isFollowing && distanceToPlayer > startFollowDistance)
+            isFollowing = true;
+        else if (isFollowing && distanceToPlayer <= stopFollowDistance)
+            isFollowing = false;
+
+
+        if (!isFollowing)
         {
-            if (followEnabled && followTarget != null)
-            {
-                targetPosition = followTarget.position;
-
-                // 1. Check if we can go straight to the target without pathfinding
-                if (IsPathClear(transform.position, targetPosition))
-                {
-                    isUsingDirectPath = true;
-                    currentPath.Clear();
-                    currentPath.Add(targetPosition); // Simple 1-point path
-                }
-                else
-                {
-                    isUsingDirectPath = false;
-                    // 2. Obstacle detected: Bake grid and use A*
-                    BakeGrid();
-                    CalculatePath(targetPosition);
-                }
-            }
-
-            yield return new WaitForSeconds(updateRate);
+            LookAtSmooth(targetPlayer.transform.position);
+            ApplyGravityOnly();
+            return;
         }
+
+
+        if (canSeePlayer && !isNearWall)
+        {
+            currentTargetPos = GetBestSidePosition();
+            breadcrumbs.Clear();
+        }
+        else
+        {
+            currentTargetPos = GetBestBreadcrumbTarget();
+        }
+
+        MoveTo(currentTargetPos, distanceToPlayer);
     }
 
-    void Update()
+    private void UpdatePlayerTrail()
     {
-        MoveAlongPathSmooth();
+        Vector3 playerPos = targetPlayer.transform.position;
+
+        if (breadcrumbs.Count == 0)
+        {
+            breadcrumbs.Add(playerPos);
+            return;
+        }
+
+        Vector3 lastPoint = breadcrumbs[breadcrumbs.Count - 1];
+        float dist2D = Vector2.Distance(new Vector2(playerPos.x, playerPos.z), new Vector2(lastPoint.x, lastPoint.z));
+
+        if (dist2D >= recordDistance)
+        {
+            breadcrumbs.Add(playerPos);
+            if (breadcrumbs.Count > maxBreadcrumbs) breadcrumbs.RemoveAt(0);
+        }
     }
 
-    // ================= MOVEMENT LOGIC =================
-
-    void MoveAlongPathSmooth()
+    private bool CheckWallProximity()
     {
-        if (currentPath == null || currentPath.Count == 0) return;
+        whiskerRays.Clear();
+        whiskerHits.Clear();
 
-        // --- NEW: LOOK AHEAD (String Pulling) ---
-        // If we have at least 2 points (next node + one after), check if we can skip the next one.
-        if (currentPath.Count > 1)
+        bool hitWall = false;
+        float whiskerLength = controller.radius + bodyPadding + 0.1f;
+
+        float[] heights = { 
+            controller.stepOffset + 0.1f, 
+            controller.height * 0.5f, 
+            controller.height * 0.9f 
+        };
+
+        Vector3[] directions = { transform.right, -transform.right };
+
+        foreach (float h in heights)
         {
-            // Check visibility to the node AFTER the immediate next one
-            if (IsPathClear(transform.position, currentPath[1]))
+            Vector3 origin = transform.position + Vector3.up * h;
+            foreach (Vector3 dir in directions)
             {
-                // We can see the 2nd node clearly, so remove the 1st one (cut the corner)
-                currentPath.RemoveAt(0);
-            }
-        }
-        // ----------------------------------------
+                bool hit = Physics.Raycast(origin, dir, whiskerLength, obstacleLayer);
+                if (hit) hitWall = true;
 
-        Vector3 currentPos = transform.position;
-        Vector3 targetWaypoint = currentPath[0];
-
-        // Flatten Y for distance checks
-        float distToWaypoint = Vector2.Distance(new Vector2(targetWaypoint.x, targetWaypoint.z), new Vector2(currentPos.x, currentPos.z));
-
-        // Waypoint Switching Logic
-        while (distToWaypoint < 0.5f && currentPath.Count > 0)
-        {
-            if (currentPath.Count == 1)
-            {
-                if (distToWaypoint <= stopDistance)
-                {
-                    currentPath.Clear();
-                    return; // Stop moving
-                }
-                break;
-            }
-
-            currentPath.RemoveAt(0);
-
-            if (currentPath.Count > 0)
-            {
-                targetWaypoint = currentPath[0];
-                distToWaypoint = Vector2.Distance(new Vector2(targetWaypoint.x, targetWaypoint.z), new Vector2(currentPos.x, currentPos.z));
+                whiskerRays.Add(new Ray(origin, dir * whiskerLength));
+                whiskerHits.Add(hit);
             }
         }
 
-        if (currentPath.Count == 0) return;
-
-        // Execute Movement
-        Vector3 toTarget = targetWaypoint - transform.position;
-        toTarget.y = 0; // Keep rotation flat
-
-        if (toTarget.sqrMagnitude > 0.001f)
-        {
-            Vector3 moveDir = toTarget.normalized;
-
-            // Rotation
-            Quaternion targetRot = Quaternion.LookRotation(moveDir);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * turnSpeed);
-
-            // Velocity
-            Vector3 velocity = transform.forward * moveSpeed;
-            velocity.y += Physics.gravity.y; // Apply gravity
-
-            controller.Move(velocity * Time.deltaTime);
-        }
+        return hitWall;
     }
-
-    // ================= DIRECT PATH CHECK (OPTIMIZATION) =================
 
     /// <summary>
-    /// Checks if we can walk straight to the target without hitting walls or falling in holes.
+    /// MALHA DE LASERS: Dispara 12 Linecasts (3 Alturas x 4 Larguras) formando um túnel perfeito.
+    /// Impossível bugar por nascer dentro de paredes.
     /// </summary>
-    bool IsPathClear(Vector3 start, Vector3 end)
+    private bool IsPathClearGrid(Vector3 targetPos, bool usePadding, bool saveGizmos = false)
     {
-        Vector3 dir = end - start;
-        float dist = dir.magnitude;
+        Vector3 dir = targetPos - transform.position;
+        dir.y = 0; 
+        float distance = dir.magnitude;
 
-        if (dist < 0.1f)
-            return true;
+        if (distance <= 0.1f) return true;
 
-        dir.Normalize();
+        Vector3 right = Vector3.Cross(Vector3.up, dir.normalized);
+        float castRadius = controller.radius + (usePadding ? bodyPadding : 0f);
 
-        float radius = controller.radius;
-        float height = controller.height;
+        // 3 Alturas: Canela, Cintura e Cabeça
+        float[] heights = { 
+            controller.stepOffset + 0.1f, 
+            controller.height * 0.5f, 
+            controller.height * 0.9f 
+        };
 
-        // BIGGER safety
-        float safetyRadius = radius * (safetyMultiplier + 0.5f);
-        float halfHeight = Mathf.Max(height / 2f, radius);
+        // 4 Larguras: Extrema Esquerda, Meio Esquerda, Meio Direita, Extrema Direita
+        float[] widths = { 
+            -castRadius, 
+            -castRadius * 0.33f, 
+            castRadius * 0.33f, 
+            castRadius 
+        };
 
-        LayerMask obstacleMask = NonWalkableLayer | WalkableLayer;
-
-        int samples = Mathf.CeilToInt(dist / (nodeSpacing * 0.5f));
-
-        for (int i = 0; i <= samples; i++)
+        if (saveGizmos)
         {
-            float t = (float)i / samples;
-            Vector3 samplePos = Vector3.Lerp(start, end, t);
-
-            Vector3 center = samplePos + controller.center;
-
-            Vector3 p1 = center + Vector3.up * (halfHeight - safetyRadius);
-            Vector3 p2 = center - Vector3.up * (halfHeight - safetyRadius);
-
-            // ===== FAT CAPSULE CHECK =====
-            if (Physics.CheckCapsule(p1, p2, safetyRadius, obstacleMask, QueryTriggerInteraction.Ignore))
-                return false;
-
-            // ===== HOLE CHECK =====
-            Vector3 rayOrigin = samplePos + Vector3.up * 1.5f;
-
-            if (!Physics.Raycast(rayOrigin, Vector3.down, 3f, WalkableLayer))
-                return false;
-
-            // ===== EDGE CHECK (prevents cliff hugging) =====
-            Vector3 side = Vector3.Cross(Vector3.up, dir).normalized;
-
-            if (!Physics.Raycast(rayOrigin + side * safetyRadius, Vector3.down, 3f, WalkableLayer))
-                return false;
-
-            if (!Physics.Raycast(rayOrigin - side * safetyRadius, Vector3.down, 3f, WalkableLayer))
-                return false;
+            pathGridRays.Clear();
+            pathGridHits.Clear();
         }
 
-        return true;
-    }
+        bool pathIsClear = true;
 
-
-
-    // ================= GRID BAKING =================
-
-    void BakeGrid()
-    {
-        float px = Mathf.Round(transform.position.x / nodeSpacing) * nodeSpacing;
-        float pz = Mathf.Round(transform.position.z / nodeSpacing) * nodeSpacing;
-        gridCenterPos = new Vector3(px, transform.position.y, pz);
-
-        int halfSize = gridSize / 2;
-        Vector3 startOffset = new Vector3(-halfSize * nodeSpacing, 0, -halfSize * nodeSpacing);
-        Vector3 gridOrigin = gridCenterPos + startOffset;
-
-        Array.Clear(gridNodes, 0, gridNodes.Length);
-
-        float radius = controller.radius;
-        float height = controller.height;
-
-        for (int x = 0; x < gridSize; x++)
+        foreach (float h in heights)
         {
-            for (int y = 0; y < gridSize; y++)
+            foreach (float w in widths)
             {
-                Vector3 worldPoint = gridOrigin + new Vector3(x * nodeSpacing, 0, y * nodeSpacing);
-                Vector3 rayOrigin = new Vector3(worldPoint.x, gridCenterPos.y + rayStartHeight, worldPoint.z);
+                Vector3 origin = transform.position + Vector3.up * h + right * w;
+                Vector3 target = targetPos + Vector3.up * h + right * w;
+                
+                Vector3 rayDir = (target - origin).normalized;
+                float rayDist = distance - 0.2f;
 
-                // Check for ground
-                if (!Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, rayLength, WalkableLayer, QueryTriggerInteraction.Ignore))
-                    continue;
+                bool hit = Physics.Linecast(origin, origin + rayDir * rayDist, obstacleLayer);
 
-                // Check slope
-                if (Vector3.Angle(hit.normal, Vector3.up) > controller.slopeLimit)
-                    continue;
-
-                Vector3 groundPoint = hit.point;
-
-                // --- FIX: CHECK INSIDE OBJECTS (WALKABLE OR NOT) ---
-                // We verify that the space ABOVE the node is clear of ANY layer (Walkable or NonWalkable).
-                // Again, we lift the bottom check so we don't hit the ground point itself.
-                float inflatedRadius = radius * (safetyMultiplier + 0.3f);
-
-                Vector3 basePos = groundPoint + Vector3.up * 0.2f;
-                Vector3 p1C = basePos + Vector3.up * inflatedRadius;
-                Vector3 p2C = basePos + Vector3.up * (height - inflatedRadius);
-
-                LayerMask obstacleMask = NonWalkableLayer | WalkableLayer;
-
-                if (Physics.CheckCapsule(p1C, p2C, inflatedRadius, obstacleMask, QueryTriggerInteraction.Ignore))
-                    continue;
-
-                // Extra: reject nodes near cliffs
-                Vector3 sideA = basePos + transform.right * inflatedRadius;
-                Vector3 sideB = basePos - transform.right * inflatedRadius;
-
-                if (!Physics.Raycast(sideA + Vector3.up, Vector3.down, 3f, WalkableLayer))
-                    continue;
-
-                if (!Physics.Raycast(sideB + Vector3.up, Vector3.down, 3f, WalkableLayer))
-                    continue;
-
-                gridNodes[x, y] = new Node(groundPoint, x, y);
-            }
-        }
-    }
-
-    // ================= A* PATHFINDING =================
-
-    void CalculatePath(Vector3 targetPos)
-    {
-        Node startNode = NodeFromWorldPoint(transform.position);
-        Node endNode = NodeFromWorldPoint(targetPos);
-
-        if (startNode == null) startNode = GetClosestValidNode(transform.position);
-        if (endNode == null) endNode = GetClosestValidNode(targetPos);
-
-        if (startNode == null || endNode == null || startNode == endNode) return;
-
-        List<Vector3> path = FindPath(startNode, endNode);
-        if (path != null && path.Count > 0)
-            currentPath = path;
-    }
-
-    List<Vector3> FindPath(Node start, Node end)
-    {
-        List<Node> openSet = new List<Node>();
-        HashSet<Node> closedSet = new HashSet<Node>();
-
-        openSet.Add(start);
-        start.g = 0;
-        start.h = Vector3.Distance(start.position, end.position);
-
-        Node closestReachableNode = start;
-        float closestDist = start.h;
-
-        while (openSet.Count > 0)
-        {
-            Node currentNode = openSet[0];
-            for (int i = 1; i < openSet.Count; i++)
-            {
-                if (openSet[i].f < currentNode.f || (openSet[i].f == currentNode.f && openSet[i].h < currentNode.h))
-                    currentNode = openSet[i];
-            }
-
-            openSet.Remove(currentNode);
-            closedSet.Add(currentNode);
-
-            float d = Vector3.Distance(currentNode.position, end.position);
-            if (d < closestDist)
-            {
-                closestDist = d;
-                closestReachableNode = currentNode;
-            }
-
-            if (currentNode == end)
-                return RetracePath(start, end);
-
-            foreach (Node neighbor in GetNeighbors(currentNode))
-            {
-                if (closedSet.Contains(neighbor)) continue;
-                if (!CanTraverse(currentNode.position, neighbor.position)) continue;
-
-                float newMovementCostToNeighbor = currentNode.g + Vector3.Distance(currentNode.position, neighbor.position);
-
-                if (newMovementCostToNeighbor < neighbor.g || !openSet.Contains(neighbor))
+                if (saveGizmos)
                 {
-                    neighbor.g = newMovementCostToNeighbor;
-                    neighbor.h = Vector3.Distance(neighbor.position, end.position);
-                    neighbor.parent = currentNode;
+                    pathGridRays.Add(new Ray(origin, rayDir * rayDist));
+                    pathGridHits.Add(hit);
+                }
 
-                    if (!openSet.Contains(neighbor))
-                        openSet.Add(neighbor);
+                if (hit)
+                {
+                    pathIsClear = false;
+                    // Se não for para salvar o debug dos gizmos, aborta no primeiro que bater para economizar CPU
+                    if (!saveGizmos) return false; 
                 }
             }
         }
 
-        if (closestReachableNode != null && closestReachableNode != start)
-            return RetracePath(start, closestReachableNode);
-
-        return null;
+        return pathIsClear;
     }
 
-    bool CanTraverse(Vector3 from, Vector3 to)
+    private Vector3 GetBestBreadcrumbTarget()
     {
-        Vector3 dir = to - from;
-        float dist = dir.magnitude;
+        if (breadcrumbs.Count == 0) return targetPlayer.transform.position;
 
-        if (dist < 0.01f)
-            return false;
-
-        dir.Normalize();
-
-        float inflatedRadius = controller.radius * (safetyMultiplier + 0.3f);
-        float height = controller.height;
-
-        Vector3 center = from + controller.center;
-        Vector3 p1 = center + Vector3.up * inflatedRadius;
-        Vector3 p2 = center + Vector3.up * (height - inflatedRadius);
-
-        LayerMask obstacleMask = NonWalkableLayer | WalkableLayer;
-
-        if (Physics.CapsuleCast(p1, p2, inflatedRadius, dir, dist, obstacleMask))
-            return false;
-
-        return true;
-    }
-
-    IEnumerable<Node> GetNeighbors(Node node)
-    {
-        for (int x = -1; x <= 1; x++)
+        if (!isNearWall)
         {
-            for (int y = -1; y <= 1; y++)
+            for (int i = breadcrumbs.Count - 1; i > 0; i--)
             {
-                if (x == 0 && y == 0) continue;
-                int checkX = node.gridX + x;
-                int checkY = node.gridY + y;
-
-                if (checkX >= 0 && checkX < gridSize && checkY >= 0 && checkY < gridSize)
+                
+                if (IsPathClearGrid(breadcrumbs[i], usePadding: true, saveGizmos: false))
                 {
-                    if (gridNodes[checkX, checkY] != null)
-                        yield return gridNodes[checkX, checkY];
+                    breadcrumbs.RemoveRange(0, i); 
+                    CheckBreadcrumbArrival(breadcrumbs[0]);
+                    return breadcrumbs.Count > 0 ? breadcrumbs[0] : targetPlayer.transform.position;
                 }
             }
         }
-    }
 
-    List<Vector3> RetracePath(Node start, Node end)
-    {
-        List<Vector3> path = new List<Vector3>();
-        Node curr = end;
-        while (curr != start)
+
+        if (IsPathClearGrid(breadcrumbs[0], usePadding: false, saveGizmos: false))
         {
-            path.Add(curr.position);
-            curr = curr.parent;
-        }
-        path.Reverse();
-        return path;
-    }
-
-    Node NodeFromWorldPoint(Vector3 worldPos)
-    {
-        int halfSize = gridSize / 2;
-        float percentX = (worldPos.x - gridCenterPos.x) / nodeSpacing;
-        float percentY = (worldPos.z - gridCenterPos.z) / nodeSpacing;
-        int x = Mathf.RoundToInt(percentX) + halfSize;
-        int y = Mathf.RoundToInt(percentY) + halfSize;
-
-        if (x >= 0 && x < gridSize && y >= 0 && y < gridSize)
-            return gridNodes[x, y];
-        return null;
-    }
-
-    Node GetClosestValidNode(Vector3 targetPos)
-    {
-        Node bestNode = null;
-        float minDstSqr = float.MaxValue;
-
-        foreach (var node in gridNodes)
-        {
-            if (node == null) continue;
-            float dstSqr = (node.position - targetPos).sqrMagnitude;
-            if (dstSqr < minDstSqr)
-            {
-                minDstSqr = dstSqr;
-                bestNode = node;
-            }
-        }
-        return bestNode;
-    }
-
-    void OnDrawGizmos()
-    {
-        if (!Application.isPlaying || !enabled) return;
-
-        if (currentPath != null && currentPath.Count > 0)
-        {
-            Gizmos.color = isUsingDirectPath ? Color.green : Color.cyan;
-            Vector3 prev = transform.position;
-            foreach (var p in currentPath)
-            {
-                Gizmos.DrawLine(prev, p);
-                Gizmos.DrawWireSphere(p, 0.2f);
-                prev = p;
-            }
+            CheckBreadcrumbArrival(breadcrumbs[0]);
+            return breadcrumbs.Count > 0 ? breadcrumbs[0] : transform.position;
         }
 
-        if (gridNodes != null)
+        CheckBreadcrumbArrival(breadcrumbs[0]);
+        return breadcrumbs.Count > 0 ? breadcrumbs[0] : transform.position;
+    }
+
+    private void CheckBreadcrumbArrival(Vector3 targetPos)
+    {
+        Vector2 pos2D = new Vector2(transform.position.x, transform.position.z);
+        Vector2 target2D = new Vector2(targetPos.x, targetPos.z);
+
+        if (Vector2.Distance(pos2D, target2D) <= waypointReachRadius)
         {
-            Gizmos.color = new Color(1, 1, 0, 0.8f);
-            for (int x = 0; x < gridSize; x++)
+            breadcrumbs.RemoveAt(0);
+        }
+    }
+
+    private Vector3 GetBestSidePosition()
+    {
+        Transform pTransform = targetPlayer.transform;
+        Vector3 rightPos = pTransform.position + (pTransform.right * sideOffset);
+        Vector3 leftPos = pTransform.position - (pTransform.right * sideOffset);
+
+        bool rightFree = !Physics.CheckSphere(rightPos + Vector3.up * (controller.height / 2f), controller.radius, obstacleLayer) && IsPathClearGrid(rightPos, true, false);
+        bool leftFree = !Physics.CheckSphere(leftPos + Vector3.up * (controller.height / 2f), controller.radius, obstacleLayer) && IsPathClearGrid(leftPos, true, false);
+
+        if (rightFree && leftFree)
+            return Vector3.Distance(transform.position, rightPos) < Vector3.Distance(transform.position, leftPos) ? rightPos : leftPos;
+
+        if (rightFree) return rightPos;
+        if (leftFree) return leftPos;
+
+        return targetPlayer.transform.position;
+    }
+
+    private void MoveTo(Vector3 destination, float distToPlayer)
+    {
+        Vector3 moveDirection = destination - transform.position;
+        moveDirection.y = 0f;
+
+        if (controller.isGrounded)
+            verticalVelocity = -1f;
+        else
+            verticalVelocity += gravity * Time.deltaTime;
+
+        if (moveDirection.sqrMagnitude > 0.04f)
+        {
+            float speed = distToPlayer > 7.0f ? sprintSpeed : walkSpeed;
+            Vector3 velocity = moveDirection.normalized * speed;
+            velocity.y = verticalVelocity;
+
+            controller.Move(velocity * Time.deltaTime);
+            LookAtSmooth(transform.position + moveDirection);
+        }
+        else
+        {
+            ApplyGravityOnly();
+        }
+    }
+
+    private void ApplyGravityOnly()
+    {
+        if (controller.isGrounded)
+            verticalVelocity = -1f;
+        else
+            verticalVelocity += gravity * Time.deltaTime;
+
+        controller.Move(new Vector3(0f, verticalVelocity, 0f) * Time.deltaTime);
+    }
+
+    private void LookAtSmooth(Vector3 lookTarget)
+    {
+        Vector3 direction = lookTarget - transform.position;
+        direction.y = 0f;
+
+        if (direction.sqrMagnitude > 0.001f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (!showGizmos || controller == null) return;
+
+
+        for (int i = 0; i < whiskerRays.Count; i++)
+        {
+            Gizmos.color = whiskerHits[i] ? Color.red : Color.yellow;
+            Gizmos.DrawLine(whiskerRays[i].origin, whiskerRays[i].origin + whiskerRays[i].direction);
+            if (whiskerHits[i]) Gizmos.DrawSphere(whiskerRays[i].origin + whiskerRays[i].direction, 0.05f);
+        }
+
+      
+        for (int i = 0; i < pathGridRays.Count; i++)
+        {
+           
+            Gizmos.color = pathGridHits[i] ? new Color(1, 0, 0, 0.5f) : new Color(0, 1, 0, 0.2f);
+            Gizmos.DrawLine(pathGridRays[i].origin, pathGridRays[i].origin + pathGridRays[i].direction);
+            if (pathGridHits[i]) Gizmos.DrawSphere(pathGridRays[i].origin + pathGridRays[i].direction, 0.08f);
+        }
+
+        if (targetPlayer == null) return;
+
+       
+        if (breadcrumbs != null && breadcrumbs.Count > 0)
+        {
+            if (isNearWall) Gizmos.color = new Color(1f, 0f, 0f, 0.8f); 
+            else if (canSeePlayer) Gizmos.color = new Color(0f, 1f, 0f, 0.8f);
+            else Gizmos.color = new Color(1f, 0.5f, 0f, 0.8f);
+
+            for (int i = 0; i < breadcrumbs.Count; i++)
             {
-                for (int y = 0; y < gridSize; y++)
-                {
-                    if (gridNodes[x, y] != null)
-                        Gizmos.DrawWireCube(gridNodes[x, y].position, Vector3.one * 0.2f);
-                }
+                Gizmos.DrawSphere(breadcrumbs[i] + Vector3.up * 0.1f, 0.15f);
+                if (i < breadcrumbs.Count - 1) Gizmos.DrawLine(breadcrumbs[i] + Vector3.up * 0.1f, breadcrumbs[i + 1] + Vector3.up * 0.1f);
             }
+        }
+
+    
+        if (isFollowing && currentTargetPos != Vector3.zero)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawLine(transform.position + Vector3.up * 0.2f, currentTargetPos + Vector3.up * 0.2f);
+            Gizmos.DrawWireSphere(currentTargetPos + Vector3.up * 0.1f, waypointReachRadius);
         }
     }
 }
-

@@ -496,6 +496,10 @@ MonoBehaviour:
   ConsumptionRate: 0.5
   EngineOn: 0
   Condition: 100
+  source: {fileID: 5439558417643806423}
+  VehicleStart: {fileID: 8300000, guid: e16af60a9dd27df4eae09a6473455f4e, type: 3}
+  LightsOn: {fileID: 8300000, guid: 89c9b1c11a2637048a0612beff589c1a, type: 3}
+  LightsOff: {fileID: 8300000, guid: f9e0f98bcb35cbe4e874f68857aa18be, type: 3}
 --- !u!114 &5439558417643806417
 MonoBehaviour:
   m_ObjectHideFlags: 0
